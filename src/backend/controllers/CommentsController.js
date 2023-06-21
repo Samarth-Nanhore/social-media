@@ -13,6 +13,7 @@ import { v4 as uuid } from "uuid";
 
 export const getPostCommentsHandler = function (schema, request) {
   const postId = request.params.postId;
+
   try {
     const post = schema.posts.findBy({ _id: postId }).attrs;
     return new Response(200, {}, { comments: post.comments });
@@ -34,6 +35,7 @@ export const getPostCommentsHandler = function (schema, request) {
 
 export const addPostCommentHandler = function (schema, request) {
   const user = requiresAuth.call(this, request);
+
   try {
     if (!user) {
       return new Response(
@@ -53,14 +55,19 @@ export const addPostCommentHandler = function (schema, request) {
       _id: uuid(),
       ...commentData,
       username: user.username,
+      fullName: user.fullName,
+      profileAvatar: user.profileAvatar,
       votes: { upvotedBy: [], downvotedBy: [] },
       createdAt: formatDate(),
       updatedAt: formatDate(),
     };
+    console.log("ID", comment);
     const post = schema.posts.findBy({ _id: postId }).attrs;
+    console.log("parent post", post);
     post.comments.push(comment);
+
     this.db.posts.update({ _id: postId }, post);
-    return new Response(201, {}, { comments: post.comments });
+    return new Response(201, {}, { posts: this.db.posts });
   } catch (error) {
     return new Response(
       500,
@@ -110,7 +117,7 @@ export const editPostCommentHandler = function (schema, request) {
       updatedAt: formatDate(),
     };
     this.db.posts.update({ _id: postId }, post);
-    return new Response(201, {}, { comments: post.comments });
+    return new Response(201, {}, { posts: this.db.posts });
   } catch (error) {
     return new Response(
       500,
@@ -160,7 +167,7 @@ export const deletePostCommentHandler = function (schema, request) {
       (comment) => comment._id !== commentId
     );
     this.db.posts.update({ _id: postId }, post);
-    return new Response(201, {}, { comments: post.comments });
+    return new Response(201, {}, { posts: this.db.posts });
   } catch (error) {
     return new Response(
       500,
@@ -192,10 +199,10 @@ export const upvotePostCommentHandler = function (schema, request) {
       );
     }
     const { postId, commentId } = request.params;
+    const post = schema.posts.findBy({ _id: postId }).attrs;
     const commentIndex = post.comments.findIndex(
       (comment) => comment._id === commentId
     );
-    const post = schema.posts.findBy({ _id: postId }).attrs;
 
     if (
       post.comments[commentIndex].votes.upvotedBy.some(
@@ -211,7 +218,7 @@ export const upvotePostCommentHandler = function (schema, request) {
     post.comments[commentIndex].votes.downvotedBy = post.comments[
       commentIndex
     ].votes.downvotedBy.filter((currUser) => currUser._id !== user._id);
-    comments[commentIndex].votes.upvotedBy.push(user);
+    post.comments[commentIndex].votes.upvotedBy.push(user);
     this.db.posts.update({ _id: postId }, { ...post, updatedAt: formatDate() });
     return new Response(201, {}, { comments: post.comments });
   } catch (error) {
@@ -245,10 +252,10 @@ export const downvotePostCommentHandler = function (schema, request) {
       );
     }
     const { postId, commentId } = request.params;
+    const post = schema.posts.findBy({ _id: postId }).attrs;
     const commentIndex = post.comments.findIndex(
       (comment) => comment._id === commentId
     );
-    const post = schema.posts.findBy({ _id: postId }).attrs;
 
     if (
       post.comments[commentIndex].votes.downvotedBy.some(
@@ -264,9 +271,9 @@ export const downvotePostCommentHandler = function (schema, request) {
     post.comments[commentIndex].votes.upvotedBy = post.comments[
       commentIndex
     ].votes.upvotedBy.filter((currUser) => currUser._id !== user._id);
-    comments[commentIndex].votes.downvotedBy.push(user);
+    post.comments[commentIndex].votes.downvotedBy.push(user);
     this.db.posts.update({ _id: postId }, { ...post, updatedAt: formatDate() });
-    return new Response(201, {}, {  comments: post.comments  });
+    return new Response(201, {}, { comments: post.comments });
   } catch (error) {
     return new Response(
       500,
