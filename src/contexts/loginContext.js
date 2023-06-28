@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import axios from "axios";
 import { useState, useEffect } from "react";
+import { postLoginData } from "../services/AuthService";
 
 export const LoginContext = createContext();
 
@@ -18,10 +18,7 @@ export const LoginContextProvider = ({ children }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("/api/auth/login", {
-        username,
-        password,
-      });
+      const response = await postLoginData(username, password);
       const { foundUser, encodedToken } = response.data;
       // Store encodedToken in localStorage
       localStorage.setItem("token", encodedToken);

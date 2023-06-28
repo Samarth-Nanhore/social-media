@@ -1,17 +1,14 @@
-import axios from "axios";
 import "./App.css";
-import { useEffect } from "react";
-import { Login } from "./components/Login";
-import { Route, Routes } from "react-router-dom";
+import { AppRoutes } from "./routes/AppRoutes";
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
+      <AppRoutes />
     </>
   );
 }
 
 export default App;
+
+// convert <Navigation /> navabr into sidebar

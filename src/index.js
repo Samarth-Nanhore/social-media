@@ -6,6 +6,7 @@ import { makeServer } from "./server";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { LoginContextProvider } from "../src/contexts/loginContext";
+import { PostContextProvider } from "../src/contexts/PostContext";
 
 // Call make Server
 makeServer();
@@ -15,7 +16,9 @@ ReactDOM.render(
     <Router>
       <ChakraProvider>
         <LoginContextProvider>
-          <App />
+          <PostContextProvider>
+            <App />
+          </PostContextProvider>
         </LoginContextProvider>
       </ChakraProvider>
     </Router>
