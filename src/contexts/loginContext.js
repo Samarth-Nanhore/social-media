@@ -1,12 +1,14 @@
 import { createContext } from "react";
 import { useState, useEffect } from "react";
 import { postLoginData } from "../services/AuthService";
+import { useNavigate } from "react-router-dom";
 
 export const LoginContext = createContext();
 
 export const LoginContextProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -26,6 +28,7 @@ export const LoginContextProvider = ({ children }) => {
       localStorage.setItem("foundUser", JSON.stringify(foundUser));
       setUsername(""); // Clear username input
       setPassword(""); // Clear password input
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
     }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllPostsFromServer } from "../services/PostService";
 import { DisplayPost } from "../components/DisplayPost";
+import { Navigation } from "../components/Navigation";
 import Loader from "../components/Loader";
 
 export const Explore = () => {
@@ -21,6 +22,10 @@ export const Explore = () => {
 
   return (
     <>
+      <div style={{ marginBottom: "2rem" }}>
+        <Navigation />
+      </div>
+
       {allpost.length === 0 ? (
         <Loader />
       ) : (

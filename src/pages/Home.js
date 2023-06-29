@@ -1,8 +1,8 @@
 // import { Navbar } from "../components/Navbar";
 // import { Sidebar } from "../components/Sidebar";
-// import { Navigation } from "../components/Navigation";
 import { useState, useEffect } from "react";
 import { DisplayPost } from "../components/DisplayPost";
+import { Navigation } from "../components/Navigation";
 import { getAllPostsOfUserFromServer } from "../services/PostService";
 import Loader from "../components/Loader";
 
@@ -25,6 +25,10 @@ const HomePage = () => {
 
   return (
     <div>
+      <div style={{ marginBottom: "2rem" }}>
+        <Navigation />
+      </div>
+
       {userpost.length === 0 ? (
         <Loader />
       ) : (
